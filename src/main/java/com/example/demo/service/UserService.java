@@ -6,10 +6,13 @@ import com.example.demo.dtos.request.PageReq;
 import com.example.demo.dtos.response.UserResponse;
 import com.example.demo.entitiy.User;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface UserService {
     public PageRes<UserResponse> getAll(PageReq pageReq);
 
     public Res<?> deleteById(String id);
+
+    void exportExcel(HttpServletResponse response);
 }

@@ -10,12 +10,16 @@ import com.example.demo.repository.CompanyRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import com.example.demo.utils.PaginationUtils;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +48,8 @@ public class UserServiceImpl implements UserService {
                     .username(user.getUsername())
                     .email(user.getEmail())
                     .createAt(user.getCreateAt())
+                    .updateAt(user.getUpdateAt())
+                    .companyName(user.getCompanyId())
                     .companyName(companyRepository.findById(user.getCompanyId()).get().getName())
                     .build();
             users.add(userResponse);
@@ -64,6 +70,38 @@ public class UserServiceImpl implements UserService {
             return new Res<String>("Deleted!", HttpStatus.OK);
         }
         return new Res<String>("Not found!", HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    public void exportExcel(HttpServletResponse response) {
+//        Workbook workbook = new XSSFWorkbook();
+//        Sheet userSheet = workbook.createSheet("User Report");
+//        Row header = userSheet.createRow(0);
+//        CellStyle headerStyle = workbook.createCellStyle();
+//        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+//        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//
+//        XSSFFont font = ((XSSFWorkbook) workbook).createFont();
+//        font.setFontName("Arial");
+//        font.setFontHeightInPoints((short) 16);
+//        font.setBold(true);
+//        headerStyle.setFont(font);
+//
+//        Cell headerCell = header.createCell(0);
+//        headerCell.setCellValue("Name");
+//        headerCell.setCellStyle(headerStyle);
+//
+//        headerCell = header.createCell(1);
+//        headerCell.setCellValue("Age");
+//        headerCell.setCellStyle(headerStyle);
+
+        response.setContentType("application/octen-stream");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=user.xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        List<User> users = userRepository.findAll();
+
     }
 
 }
