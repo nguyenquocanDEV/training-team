@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface UserService {
     public PageRes<UserResponse> getAll(PageReq pageReq);
-
+    public PageRes<UserResponse> search(PageReq pageReq, String username, String email, String companyName);
     public Res<?> deleteById(String id);
 
     void exportExcel(HttpServletResponse response);

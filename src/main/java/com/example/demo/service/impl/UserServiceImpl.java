@@ -10,9 +10,6 @@ import com.example.demo.repository.CompanyRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import com.example.demo.utils.PaginationUtils;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -58,6 +55,31 @@ public class UserServiceImpl implements UserService {
                 userPage.getTotalElements(),
                 userPage.getSize(),
                 userPage.getNumber() + 1
+        );
+        return new PageRes<UserResponse>(users, pages, "User List", HttpStatus.OK);
+    }
+
+    @Override
+    public PageRes<UserResponse> search(PageReq pageReq, String username, String email, String companyName) {
+        Pageable pageable = PaginationUtils.getPageReq(pageReq);
+        Page<User> userPage = userRepository.findByUsernameWithinOrEmailWithinOrCompany_NameWithin(pageable,username,email,companyName);
+        List<UserResponse> users = new ArrayList<>();
+        userPage.getContent().forEach(user -> {
+            UserResponse userResponse = UserResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .createAt(user.getCreateAt())
+                .updateAt(user.getUpdateAt())
+                .companyName(user.getCompanyId())
+                .companyName(companyRepository.findById(user.getCompanyId()).get().getName())
+                .build();
+            users.add(userResponse);
+        });
+        Pages pages = new Pages(
+            userPage.getTotalElements(),
+            userPage.getSize(),
+            userPage.getNumber() + 1
         );
         return new PageRes<UserResponse>(users, pages, "User List", HttpStatus.OK);
     }

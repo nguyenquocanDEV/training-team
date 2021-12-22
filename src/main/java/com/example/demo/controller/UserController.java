@@ -30,6 +30,14 @@ public class UserController {
     public ResponseEntity<PageRes<UserResponse>> getAll(PageReq pageReq) {
         return ResponseEntity.ok(userService.getAll(pageReq));
     }
+    @GetMapping("/search")
+    public ResponseEntity<PageRes<UserResponse>> search(
+        PageReq pageReq,
+        @RequestParam(value = "username", required = false) String username,
+        @RequestParam(value = "email", required = false) String email,
+        @RequestParam(value = "companyName", required = false) String companyName) {
+        return ResponseEntity.ok(userService.search(pageReq,username,email,companyName));
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Res<?>> delete(@PathVariable String id) {
